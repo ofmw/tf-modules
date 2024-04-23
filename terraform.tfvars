@@ -1,8 +1,8 @@
 vpc-cidr             = "172.0.0.0/16"
 availability-zone    = ["ap-east-1a", "ap-east-1c"]
-pub-sub-cidr         = ["172.0.10.0/25", "172.0.10.128/25"]
-pvt-sub-app-cidr     = ["172.0.20.0/25", "172.0.20.128/25"]
-pvt-sub-db-cidr      = ["172.0.30.0/25", "172.0.30.128/25"]
+pub-num              = 2
+pvt-app-num          = 2
+pvt-db-num           = 2
 key-name             = "value"
 bastion-ami          = "value"
 bastion-type         = "value"
@@ -22,4 +22,4 @@ record-type          = "CNAME"
 record-ttl           = "300"
 instance-class       = "db.r5.large"
 onprem-cidr-block    = "192.168.0.84"
-my-ip = "61.85.118.29"
+my-ip                = "61.85.118.29"
