@@ -86,5 +86,5 @@ variable "k8s-node-asg-desired" {
 }
 
 variable "my-ip" {
-  type    = string
+  type = string
 }
