@@ -13,27 +13,17 @@ module "vpc" {
 
 module "instance" {
   # count = 1 or 0
-  source                = "./modules/instance"
-  vpc-id                = module.vpc.vpc-id
-  pub-sub-cidr          = module.vpc.pub-sub-id[*]
-  pvt-sub-app-cidr      = module.vpc.pvt-app-sub-id[*]
-  key-name              = var.key-name
-  bastion-ami           = var.bastion-ami
-  bastion-type          = var.bastion-type
-  grafana-depends-on    = module.elb.k8s-grafana-tg-3000
-  grafana-ami           = var.grafana-ami
-  grafana-type          = var.grafana-type
-  k8s-master-depends-on = module.elb.k8s-prometheus-tg-9090
-  k8s-master-ami        = var.k8s-master-ami
-  k8s-master-type       = var.k8s-master-type
-  k8s-master-pvt-ip     = var.k8s-master-pvt-ip
-  k8s-node-ami          = var.k8s-node-ami
-  k8s-node-type         = var.k8s-node-type
-  k8s-node-asg-min      = var.k8s-node-asg-min
-  k8s-node-asg-max      = var.k8s-node-asg-max
-  k8s-node-asg-desired  = var.k8s-node-asg-desired
-  k8s-service-tg-80     = module.elb.k8s-service-tg-80
-  my-ip                 = var.my-ip
+  source             = "./modules/instance"
+  vpc-id             = module.vpc.vpc-id
+  pub-sub-cidr       = module.vpc.pub-sub-id[*]
+  pvt-sub-app-cidr   = module.vpc.pvt-app-sub-id[*]
+  key-name           = var.key-name
+  bastion-ami        = var.bastion-ami
+  bastion-type       = var.bastion-type
+  grafana-depends-on = module.elb.k8s-grafana-tg-3000
+  grafana-ami        = var.grafana-ami
+  grafana-type       = var.grafana-type
+  my-ip              = var.my-ip
 }
 
 module "k8s" {
@@ -43,11 +33,6 @@ module "k8s" {
   pub-sub-cidr           = module.vpc.pub-sub-id[*]
   pvt-sub-app-cidr       = module.vpc.pvt-app-sub-id[*]
   key-name               = var.key-name
-  bastion-ami            = var.bastion-ami
-  bastion-type           = var.bastion-type
-  grafana-depends-on     = module.elb.k8s-grafana-tg-3000
-  grafana-ami            = var.grafana-ami
-  grafana-type           = var.grafana-type
   k8s-master-depends-on  = module.elb.k8s-prometheus-tg-9090
   k8s-master-ami         = var.k8s-master-ami
   k8s-master-type        = var.k8s-master-type
@@ -80,9 +65,13 @@ module "rds" {
   db-instance-class    = var.instance-class
 }
 
-module "s3" {
-  source      = "./modules/s3"
-  bucket-name = var.bucket-name
+module "route53" {
+  source         = "./modules/route53"
+  zone-name      = var.zone-name
+  record-name    = var.record-name
+  record-type    = var.record-type
+  record-ttl     = var.record-ttl
+  record-records = module.cloudfront.cloudfront-domain-name
 }
 
 module "waf" {
@@ -96,13 +85,9 @@ module "cloudfront" {
   web-acl-arn    = module.waf.web-acl-arn
 }
 
-module "route53" {
-  source         = "./modules/route53"
-  zone-name      = var.zone-name
-  record-name    = var.record-name
-  record-type    = var.record-type
-  record-ttl     = var.record-ttl
-  record-records = module.cloudfront.cloudfront-domain-name
+module "s3" {
+  source      = "./modules/s3"
+  bucket-name = var.bucket-name
 }
 
 module "vpn" {

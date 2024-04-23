@@ -8,14 +8,14 @@ variable "availability-zone" {
   default = ["us-east-1a", "us-east-1c"]
 }
 
-variable "pub-num" {
+variable "pub-sub-count" {
   type = number
 }
 
-variable "pvt-app-num" {
+variable "pvt-app-count" {
   type = number
 }
 
-variable "pvt-db-num" {
+variable "pvt-db-count" {
   type = number
 }
