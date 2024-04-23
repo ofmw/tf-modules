@@ -7,31 +7,31 @@ resource "aws_vpc" "cloud_vpc" {
 
 # Create Public Subnet
 resource "aws_subnet" "cloud_pub_sub" {
-  count             = length(var.pub-sub-cidr)
+  count             = var.pub-num
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 9, 10)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
   availability_zone = var.availability-zone[count.index % length(var.availability-zone)]
   tags = {
-    Name = "cloud-pub-sub-${element(["a", "c"], count.index % 2)}"
+    Name = "cloud-pub-sub-${count.index + 1}"
   }
 }
 resource "aws_subnet" "cloud_pvt_app_sub" {
-  count             = length(var.pvt-sub-app-cidr)
+  count             = var.pvt-app-num
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = var.pvt-sub-app-cidr[count.index]
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-sub-${element(["a", "c"], count.index % 2)}"
+    Name = "cloud-pvt-sub-${count.index + 1}"
   }
 }
 
 resource "aws_subnet" "cloud_pvt_db_sub" {
-  count             = length(var.pvt-sub-db-cidr)
+  count             = var.pvt-db-num
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = var.pvt-sub-db-cidr[count.index]
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-db-sub-${element(["a", "c"], count.index % 2)}"
+    Name = "cloud-pvt-db-sub-${count.index + 1}"
   }
 }
 
@@ -77,7 +77,7 @@ resource "aws_route_table" "cloud_pvt_db_rtb" {
 
 # Public Route Table Association
 resource "aws_route_table_association" "cloud-pub-rtb-assc" {
-  count          = length(var.pub-sub-cidr)
+  count          = var.pub-num
   subnet_id      = aws_subnet.cloud_pub_sub[count.index].id
   route_table_id = aws_route_table.cloud_pub_rtb.id
 }
@@ -85,14 +85,14 @@ resource "aws_route_table_association" "cloud-pub-rtb-assc" {
 
 # Private Route Table Association
 resource "aws_route_table_association" "cloud-pvt-app-rtb-assc" {
-  count          = length(var.pvt-sub-app-cidr)
+  count          = var.pvt-app-num
   subnet_id      = aws_subnet.cloud_pvt_app_sub[count.index].id
   route_table_id = aws_route_table.cloud_pvt_app_rtb.id
 }
 
 
 resource "aws_route_table_association" "cloud-pvt-db-rtb-assc" {
-  count          = length(var.pvt-sub-db-cidr)
+  count          = var.pvt-db-num
   subnet_id      = aws_subnet.cloud_pvt_db_sub[count.index].id
   route_table_id = aws_route_table.cloud_pvt_db_rtb.id
 }

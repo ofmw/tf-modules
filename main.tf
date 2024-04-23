@@ -6,17 +6,17 @@ module "vpc" {
   source            = "./modules/vpc"
   vpc-cidr          = var.vpc-cidr
   availability-zone = var.availability-zone
-  pub-sub-cidr      = var.pub-sub-cidr
-  pvt-sub-app-cidr  = var.pvt-sub-app-cidr
-  pvt-sub-db-cidr   = var.pvt-sub-db-cidr
+  pub-num           = var.pub-num
+  pvt-app-num       = var.pvt-app-num
+  pvt-db-num        = var.pvt-db-num
 }
 
 module "instance" {
   # count = 1 or 0
   source                = "./modules/instance"
   vpc-id                = module.vpc.vpc-id
-  pub-sub-cidr          = var.pub-sub-cidr
-  pvt-sub-app-cidr      = var.pvt-sub-app-cidr
+  pub-sub-cidr          = module.vpc.pub-sub-id[*]
+  pvt-sub-app-cidr      = module.vpc.pvt-app-sub-id[*]
   key-name              = var.key-name
   bastion-ami           = var.bastion-ami
   bastion-type          = var.bastion-type
@@ -40,8 +40,8 @@ module "k8s" {
   count                  = 1
   source                 = "./modules/k8s(no eks)"
   vpc-id                 = module.vpc.vpc-id
-  pub-sub-cidr           = var.pub-sub-cidr
-  pvt-sub-app-cidr       = var.pvt-sub-app-cidr
+  pub-sub-cidr           = module.vpc.pub-sub-id[*]
+  pvt-sub-app-cidr       = module.vpc.pvt-app-sub-id[*]
   key-name               = var.key-name
   bastion-ami            = var.bastion-ami
   bastion-type           = var.bastion-type
