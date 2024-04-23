@@ -6,9 +6,9 @@ module "vpc" {
   source            = "./modules/vpc"
   vpc-cidr          = var.vpc-cidr
   availability-zone = var.availability-zone
-  pub-num           = var.pub-num
-  pvt-app-num       = var.pvt-app-num
-  pvt-db-num        = var.pvt-db-num
+  pub-sub-count     = var.pub-sub-count
+  pvt-app-count     = var.pvt-app-count
+  pvt-db-count      = var.pvt-db-count
 }
 
 module "instance" {

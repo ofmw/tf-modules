@@ -7,7 +7,7 @@ resource "aws_vpc" "cloud_vpc" {
 
 # Create Public Subnet
 resource "aws_subnet" "cloud_pub_sub" {
-  count             = var.pub-num
+  count             = var.pub-sub-count
   vpc_id            = aws_vpc.cloud_vpc.id
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
   availability_zone = var.availability-zone[count.index % length(var.availability-zone)]
@@ -16,7 +16,7 @@ resource "aws_subnet" "cloud_pub_sub" {
   }
 }
 resource "aws_subnet" "cloud_pvt_app_sub" {
-  count             = var.pvt-app-num
+  count             = var.pvt-app-count
   vpc_id            = aws_vpc.cloud_vpc.id
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
   availability_zone = var.availability-zone[count.index]
@@ -26,7 +26,7 @@ resource "aws_subnet" "cloud_pvt_app_sub" {
 }
 
 resource "aws_subnet" "cloud_pvt_db_sub" {
-  count             = var.pvt-db-num
+  count             = var.pvt-db-count
   vpc_id            = aws_vpc.cloud_vpc.id
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
   availability_zone = var.availability-zone[count.index]
@@ -77,7 +77,7 @@ resource "aws_route_table" "cloud_pvt_db_rtb" {
 
 # Public Route Table Association
 resource "aws_route_table_association" "cloud-pub-rtb-assc" {
-  count          = var.pub-num
+  count          = var.pub-sub-count
   subnet_id      = aws_subnet.cloud_pub_sub[count.index].id
   route_table_id = aws_route_table.cloud_pub_rtb.id
 }
@@ -85,14 +85,14 @@ resource "aws_route_table_association" "cloud-pub-rtb-assc" {
 
 # Private Route Table Association
 resource "aws_route_table_association" "cloud-pvt-app-rtb-assc" {
-  count          = var.pvt-app-num
+  count          = var.pvt-app-count
   subnet_id      = aws_subnet.cloud_pvt_app_sub[count.index].id
   route_table_id = aws_route_table.cloud_pvt_app_rtb.id
 }
 
 
 resource "aws_route_table_association" "cloud-pvt-db-rtb-assc" {
-  count          = var.pvt-db-num
+  count          = var.pvt-db-count
   subnet_id      = aws_subnet.cloud_pvt_db_sub[count.index].id
   route_table_id = aws_route_table.cloud_pvt_db_rtb.id
 }

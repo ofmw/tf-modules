@@ -1,8 +1,8 @@
 vpc-cidr             = "172.0.0.0/16"
 availability-zone    = ["ap-east-1a", "ap-east-1c"]
-pub-num              = 2
-pvt-app-num          = 2
-pvt-db-num           = 2
+pub-sub-count        = 2
+pvt-app-count        = 2
+pvt-db-count         = 2
 key-name             = "value"
 bastion-ami          = "value"
 bastion-type         = "value"
