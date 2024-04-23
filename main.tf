@@ -17,7 +17,7 @@ module "instance" {
   instance-count         = var.instance-count
   instance-ami-list      = var.instance-ami-list
   instance-type-list     = var.instance-type-list
-  instance-sub-id-list   = module.vpc.aws
+  instance-sub-id-list   = module.vpc.pvt-sub-list[*].id
   instance-key-name-list = var.instance-key-name-list
   vpc-id                 = module.vpc.vpc-id
   availability-zone      = var.availability-zone
@@ -28,9 +28,8 @@ module "k8s" {
   count                = 1
   source               = "./modules/k8s(no eks)"
   vpc-id               = module.vpc.vpc-id
-  pub-sub-id           = module.vpc.pub-sub.id
-  pvt-sub-ids          = [module.vpc.pvt-sub-list[*].id]
-  pvt-sub-cidr-blocks  = [module.vpc.pvt-sub-list[*].cidr_block]
+  pvt-sub-ids          = module.vpc.pvt-sub-list[*].id
+  pvt-sub-cidr-blocks  = module.vpc.pvt-sub-list[*].cidr_block
   k8s-key-name         = var.k8s-key-name
   k8s-master-ami       = var.k8s-master-ami
   k8s-master-type      = var.k8s-master-type
@@ -39,26 +38,24 @@ module "k8s" {
   k8s-node-asg-min     = var.k8s-node-asg-min
   k8s-node-asg-max     = var.k8s-node-asg-max
   k8s-node-asg-desired = var.k8s-node-asg-desired
-  k8s-service-tg-80    = module.elb.k8s-service-tg-80
-  k8s-monitor-alb-id   = module.elb.k8s-monitor-alb-id
+  k8s-service-tg-80    = module.elb.k8s-service-tg-80.arn
 }
 
 module "elb" {
-  count             = 0
   source            = "./modules/elb"
   vpc-id            = module.vpc.vpc-id
-  pub-sub-id        = module.vpc.pub-sub-id
-  grafana-server-id = module.instance.grafana-server-id
-  k8s-master-id     = module.instance.k8s-master-id
+  pub-sub-ids       = module.vpc.pub-sub[*].id
+  grafana-server-id = module.instance.ec2-instances[1].id
+  k8s-master-id     = module.k8s[0].k8s-master-instance.id
 }
 
 module "rds" {
-  source               = "./modules/rds"
-  vpc-id               = module.vpc.id
-  availability-zone    = var.availability-zone
-  db-subnet-group-name = module.vpc.db_subnet_group_name
-  k8s-node-sg          = module.instance.k8s-node-sg
-  db-instance-class    = var.instance-class
+  source            = "./modules/rds"
+  vpc-id            = module.vpc.vpc-id
+  availability-zone = var.availability-zone
+  k8s-node-sg-id    = module.k8s[0].k8s-node-sg.id
+  db-instance-class = var.instance-class
+  subnet-ids        = module.vpc.pvt-sub-list[1][*].id
 }
 
 module "route53" {
@@ -87,11 +84,11 @@ module "s3" {
 }
 
 module "vpn" {
-  source              = "./modules/vpn"
-  vpc-id              = module.vpc.vpc-id
-  vgw-prop-depends-on = module.vpc.pub-route
-  pub-rtb-id          = module.vpc.pub-rtb-id
-  my-ip               = var.my-ip
-  onprem-cidr-block   = var.onprem-cidr-block
+  depends_on        = [module.vpc]
+  source            = "./modules/vpn"
+  vpc-id            = module.vpc.vpc-id
+  pub-rtb-id        = module.vpc.pub-rtb-id
+  my-ip             = var.my-ip
+  onprem-cidr-block = var.onprem-cidr-block
 
 }

@@ -1,6 +1,6 @@
 variable "zone-name" {
   type    = string
-  default = "final-team1"
+  default = "final.com"
 }
 
 variable "record-name" {
@@ -19,5 +19,5 @@ variable "record-ttl" {
 }
 
 variable "record-records" {
-  type = list(string)
+  type = string
 }

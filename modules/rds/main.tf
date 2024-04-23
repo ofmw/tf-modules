@@ -7,7 +7,7 @@ resource "aws_security_group" "rds_sg" {
     from_port       = 3306
     to_port         = 3306
     protocol        = "tcp"
-    security_groups = var.k8s-node-sg
+    security_groups = [var.k8s-node-sg-id]
   }
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group" "rds_sg" {
 resource "aws_db_subnet_group" "db_sbg" {
   name        = "db-subnet-group"
   description = "DB subnet group"
-  subnet_ids  = [aws_subnet.cloud_pvt_db_sub[0].id, aws_subnet.cloud_pvt_db_sub[1].id] # 사용할 서브넷 ID를 지정합니다.
+  subnet_ids  = var.subnet-ids # 사용할 서브넷 ID를 지정합니다.
 }
 
 resource "aws_rds_cluster" "rds_cluster" {
@@ -39,8 +39,8 @@ resource "aws_rds_cluster" "rds_cluster" {
   master_password         = "admin123"
   backup_retention_period = 7
   preferred_backup_window = "07:00-09:00"
-  db_subnet_group_name    = var.db-subnet-group-name
-  vpc_security_group_ids  = [aws_security_group.rds_sg]
+  db_subnet_group_name    = aws_db_subnet_group.db_sbg.name
+  vpc_security_group_ids  = [aws_security_group.rds_sg.id]
   skip_final_snapshot     = true
 }
 

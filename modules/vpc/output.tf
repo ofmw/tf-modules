@@ -7,7 +7,7 @@ output "pub-sub" {
 }
 
 output "pvt-sub-list" {
-  value = [aws_subnet.cloud_pvt_sub_1tier, aws_subnet.cloud_pvt_sub_2tier, aws_subnet.cloud_pvt_sub_3tier]
+  value = [aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_2tier[0]]
 }
 
 # For VPN

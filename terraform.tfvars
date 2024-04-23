@@ -14,6 +14,7 @@ instance-type-list     = ["t3.micro", "t3.small"]
 instance-key-name-list = ["cloud-ec2", "cloud-ec2"]
 
 # K8S Module Variables
+k8s-key-name         = "cloud-ec2"
 k8s-master-ami       = "ami-07bdaabc965ddd717"
 k8s-master-type      = "t3.medium"
 k8s-node-ami         = "ami-0952a1bbbbe7ddef5"
@@ -26,8 +27,8 @@ k8s-node-asg-desired = 3
 instance-class = "db.r5.large"
 
 # Route53 Module Variables
-zone-name   = ""
-record-name = ""
+zone-name   = "value"
+record-name = "value"
 record-type = "CNAME"
 record-ttl  = "300"
 

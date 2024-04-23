@@ -67,7 +67,7 @@ resource "aws_instance" "k8s_node" {
   count           = 0
   ami             = var.k8s-master-ami
   instance_type   = var.k8s-master-type
-  subnet_id       = var.pvt-sub-app-cidr[0].id
+  subnet_id       = var.pvt-sub-ids[0]
   key_name        = var.k8s-key-name
   security_groups = [aws_security_group.k8s_master_sg.id]
 
@@ -82,7 +82,7 @@ resource "aws_instance" "k8s_node" {
 
 resource "aws_launch_template" "k8s_node_tpl" {
   # count = 1 or 0
-  depends_on    = [aws_instance.k8s-master]
+  depends_on    = [aws_instance.k8s_master]
   name_prefix   = "k8s-node-"
   image_id      = var.k8s-node-ami
   instance_type = var.k8s-node-type
@@ -125,7 +125,7 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
   max_size            = var.k8s-node-asg-max
   desired_capacity    = var.k8s-node-asg-desired
   vpc_zone_identifier = var.pvt-sub-ids
-  target_group_arns   = var.k8s-service-tg-80
+  target_group_arns   = [var.k8s-service-tg-80]
 
   tag {
     key                 = "Name"

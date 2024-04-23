@@ -7,16 +7,16 @@ variable "availability-zone" {
   default = ["us-east-1a", "us-east-1c"]
 }
 
-variable "db-subnet-group-name" {
+variable "k8s-node-sg-id" {
   type = string
-}
-
-variable "k8s-node-sg" {
-  type = list(string)
 }
 
 variable "db-instance-class" {
   type    = string
   default = "db.r5.large"
 
+}
+
+variable "subnet-ids" {
+  type = list(string)
 }

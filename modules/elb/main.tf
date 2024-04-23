@@ -1,5 +1,4 @@
 # Target Group
-
 resource "aws_lb_target_group" "k8s_grafana_tg_3000" {
   name     = "k8s-grafana-tg-3000"
   port     = 3000
@@ -120,7 +119,7 @@ resource "aws_lb" "k8s_monitor_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.k8s_alb_sg.id]
-  subnets            = var.pub-sub-id
+  subnets            = var.pub-sub-ids
 }
 
 resource "aws_lb_listener" "k8s_grafana_listener_3000" {
@@ -149,8 +148,8 @@ resource "aws_lb" "k8s_service_alb" {
   name               = "k8s-service-alb"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.k8s-alb-sg.id]
-  subnets            = var.pub-sub-id
+  security_groups    = [aws_security_group.k8s_alb_sg.id]
+  subnets            = var.pub-sub-ids
 }
 
 resource "aws_lb_listener" "k8s_jenkins_listener_8080" {

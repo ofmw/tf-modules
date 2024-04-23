@@ -2,10 +2,6 @@ variable "vpc-id" {
   type = string
 }
 
-variable "pub-sub-id" {
-  type = string
-}
-
 variable "pvt-sub-ids" {
   type = list(string)
 }
@@ -28,7 +24,6 @@ variable "k8s-master-type" {
 
 variable "k8s-node-ami" {
   type = string
-
 }
 
 variable "k8s-node-type" {
@@ -37,8 +32,7 @@ variable "k8s-node-type" {
 }
 
 variable "k8s-service-tg-80" {
-  type = list(string)
-  #ouput
+  type = string
 }
 
 variable "k8s-node-asg-min" {
@@ -54,8 +48,4 @@ variable "k8s-node-asg-max" {
 variable "k8s-node-asg-desired" {
   type    = number
   default = 3
-}
-
-variable "k8s-monitor-alb-id" {
-  type = string
 }

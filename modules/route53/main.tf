@@ -9,5 +9,5 @@ resource "aws_route53_record" "bluecat495_record" {
   type    = var.record-type
   ttl     = var.record-ttl
 
-  records = var.record-records
+  records = [var.record-records]
 }

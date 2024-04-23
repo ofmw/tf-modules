@@ -24,7 +24,7 @@ resource "aws_vpn_gateway_attachment" "cloud_vgw_att" {
 }
 
 resource "aws_vpn_gateway_route_propagation" "cloud_vgw_prop" {
-  depends_on     = [var.vgw-prop-depends-on, aws_vpn_gateway_attachment.cloud_vgw_att]
+  depends_on     = [aws_vpn_gateway_attachment.cloud_vgw_att]
   route_table_id = var.pub-rtb-id
   vpn_gateway_id = aws_vpn_gateway.cloud_vgw.id
 }

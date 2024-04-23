@@ -40,10 +40,6 @@ variable "instance-type-list" {
   type = list(string)
 }
 
-variable "instance-sub-id-list" {
-  type = list(string)
-}
-
 variable "instance-key-name-list" {
   type = list(string)
 }

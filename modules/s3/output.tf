@@ -5,3 +5,7 @@ output "s3-domain-name" {
 output "s3-id" {
   value = aws_s3_bucket.s3_bucket.id
 }
+
+output "s3-buket-arn" {
+  value = aws_s3_bucket.s3_bucket.arn
+}

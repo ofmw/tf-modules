@@ -2,7 +2,7 @@ variable "vpc-id" {
   type = string
 }
 
-variable "pub-sub-id" {
+variable "pub-sub-ids" {
   type = list(string)
 }
 

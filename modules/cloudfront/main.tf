@@ -42,22 +42,22 @@ resource "aws_cloudfront_distribution" "cloudfront" {
   retain_on_delete = true
 }
 
-data "aws_iam_policy_document" "s3_policy" {
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.fin-test.arn}/*"]
-    effect    = "Allow"
-    principals {
-      identifiers = ["*"]
-      type        = "*"
-    }
-  }
-  statement {
-    actions   = ["s3:GetObject"]
-    resources = ["${aws_s3_bucket.fin-test.arn}/*"]
-    principals {
-      identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
-      type        = "AWS"
-    }
-  }
-}
+# data "aws_iam_policy_document" "s3_policy" {
+#   statement {
+#     actions   = ["s3:GetObject"]
+#     resources = ["${aws_s3_bucket.fin-test.arn}/*"]
+#     effect    = "Allow"
+#     principals {
+#       identifiers = ["*"]
+#       type        = "*"
+#     }
+#   }
+#   statement {
+#     actions   = ["s3:GetObject"]
+#     resources = ["${aws_s3_bucket.fin-test.arn}/*"]
+#     principals {
+#       identifiers = [aws_cloudfront_origin_access_identity.default.iam_arn]
+#       type        = "AWS"
+#     }
+#   }
+# }
