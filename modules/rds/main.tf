@@ -22,6 +22,12 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+#subnet Group
+resource "aws_db_subnet_group" "db_sbg" {
+  name        = "db-subnet-group"
+  description = "DB subnet group"
+  subnet_ids  = [aws_subnet.cloud_pvt_db_sub[0].id, aws_subnet.cloud_pvt_db_sub[1].id] # 사용할 서브넷 ID를 지정합니다.
+}
 
 resource "aws_rds_cluster" "rds_cluster" {
   cluster_identifier      = "example-aurora-cluster"

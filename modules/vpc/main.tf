@@ -5,44 +5,47 @@ resource "aws_vpc" "cloud_vpc" {
   }
 }
 
-# Create Public Subnet
+# Public Subnet
 resource "aws_subnet" "cloud_pub_sub" {
-  count             = var.pub-sub-count
+  count             = length(var.availability-zone)
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, count.index)
   availability_zone = var.availability-zone[count.index % length(var.availability-zone)]
   tags = {
     Name = "cloud-pub-sub-${count.index + 1}"
   }
 }
-resource "aws_subnet" "cloud_pvt_app_sub" {
-  count             = var.pvt-app-count
+
+# Private Subnet
+resource "aws_subnet" "cloud_pvt_sub_1tier" {
+  count             = length(var.availability-zone) * var.tier-usage-status-list[0]
+  vpc_id            = aws_vpc.cloud_vpc.id
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
+  availability_zone = var.availability-zone[count.index]
+  tags = {
+    Name = "cloud-pvt-1tier-${count.index + 1}"
+  }
+}
+
+resource "aws_subnet" "cloud_pvt_sub_2tier" {
+  count             = length(var.availability-zone) * var.tier-usage-status-list[1]
   vpc_id            = aws_vpc.cloud_vpc.id
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-sub-${count.index + 1}"
+    Name = "cloud-pvt-2tier-${count.index + 1}"
   }
 }
 
-resource "aws_subnet" "cloud_pvt_db_sub" {
-  count             = var.pvt-db-count
+resource "aws_subnet" "cloud_pvt_sub_3tier" {
+  count             = length(var.availability-zone) * var.tier-usage-status-list[2]
   vpc_id            = aws_vpc.cloud_vpc.id
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-db-sub-${count.index + 1}"
+    Name = "cloud-pvt-3tier-${count.index + 1}"
   }
 }
-
-
-#subnet Group
-resource "aws_db_subnet_group" "db_sub_gp" {
-  name        = "db-subnet-group"
-  description = "DB subnet group"
-  subnet_ids  = [aws_subnet.cloud_pvt_db_sub[0].id, aws_subnet.cloud_pvt_db_sub[1].id] # 사용할 서브넷 ID를 지정합니다.
-}
-
 
 # Create Internet Gatway
 resource "aws_internet_gateway" "cloud_igw" {
@@ -61,42 +64,53 @@ resource "aws_route_table" "cloud_pub_rtb" {
 }
 
 # Create a Private Route table
-resource "aws_route_table" "cloud_pvt_app_rtb" {
+resource "aws_route_table" "cloud_pvt_rtb_1tier" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pvt-app-rtb"
+    Name = "cloud-pvt-rtb-1tier"
   }
 }
 
-resource "aws_route_table" "cloud_pvt_db_rtb" {
+resource "aws_route_table" "cloud_pvt_rtb_2tier" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pvt-db-rtb"
+    Name = "cloud-pvt-rtb-2tier"
+  }
+}
+
+resource "aws_route_table" "cloud_pvt_rtb_3tier" {
+  vpc_id = aws_vpc.cloud_vpc.id
+  tags = {
+    Name = "cloud-pvt-rtb-3tier"
   }
 }
 
 # Public Route Table Association
-resource "aws_route_table_association" "cloud-pub-rtb-assc" {
-  count          = var.pub-sub-count
+resource "aws_route_table_association" "cloud_pub_rtb_assc" {
+  count          = length(aws_subnet.cloud_pub_sub)
   subnet_id      = aws_subnet.cloud_pub_sub[count.index].id
   route_table_id = aws_route_table.cloud_pub_rtb.id
 }
 
 
 # Private Route Table Association
-resource "aws_route_table_association" "cloud-pvt-app-rtb-assc" {
-  count          = var.pvt-app-count
-  subnet_id      = aws_subnet.cloud_pvt_app_sub[count.index].id
-  route_table_id = aws_route_table.cloud_pvt_app_rtb.id
+resource "aws_route_table_association" "cloud_pvt_rtb_assc_1tier" {
+  count          = length(aws_subnet.cloud_pvt_sub_1tier)
+  subnet_id      = aws_subnet.cloud_pvt_sub_1tier[count.index].id
+  route_table_id = aws_route_table.cloud_pvt_rtb_1tier.id
 }
 
-
-resource "aws_route_table_association" "cloud-pvt-db-rtb-assc" {
-  count          = var.pvt-db-count
-  subnet_id      = aws_subnet.cloud_pvt_db_sub[count.index].id
-  route_table_id = aws_route_table.cloud_pvt_db_rtb.id
+resource "aws_route_table_association" "cloud_pvt_rtb_assc_2tier" {
+  count          = length(aws_subnet.cloud_pvt_sub_2tier)
+  subnet_id      = aws_subnet.cloud_pvt_sub_2tier[count.index].id
+  route_table_id = aws_route_table.cloud_pvt_rtb_2tier.id
 }
 
+resource "aws_route_table_association" "cloud_pvt_rtb_assc_3tier" {
+  count          = length(aws_subnet.cloud_pvt_sub_3tier)
+  subnet_id      = aws_subnet.cloud_pvt_sub_3tier[count.index].id
+  route_table_id = aws_route_table.cloud_pvt_rtb_3tier.id
+}
 
 # Create a EIP
 resource "aws_eip" "cloud_ngw_eip" {
@@ -126,14 +140,23 @@ resource "aws_route" "cloud_pub_route" {
 }
 
 # Associate Private Subnets with NAT Gateway
-resource "aws_route" "cloud-pvt-app-route" {
-  route_table_id         = aws_route_table.cloud_pvt_app_rtb.id
+resource "aws_route" "cloud-pvt-1tier-route" {
+  count                  = length(aws_subnet.cloud_pvt_sub_1tier)
+  route_table_id         = aws_route_table.cloud_pvt_rtb_1tier.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
 }
 
-resource "aws_route" "cloud-pvt-db-route" {
-  route_table_id         = aws_route_table.cloud_pvt_db_rtb.id
+resource "aws_route" "cloud-pvt-2tier-route" {
+  count                  = length(aws_subnet.cloud_pvt_sub_2tier)
+  route_table_id         = aws_route_table.cloud_pvt_rtb_2tier.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
+}
+
+resource "aws_route" "cloud-pvt-3tier-route" {
+  count                  = length(aws_subnet.cloud_pvt_sub_3tier)
+  route_table_id         = aws_route_table.cloud_pvt_rtb_3tier.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
 }

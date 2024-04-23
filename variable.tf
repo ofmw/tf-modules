@@ -1,5 +1,5 @@
 # Global Variables
-variable "env" { # 환경명 ex)prd, stg, dev...
+variable "env" { # ex)prd, stg, dev...
   type = string
 }
 
@@ -20,39 +20,32 @@ variable "availability-zone" {
   default = ["us-east-1a", "us-east-1c"]
 }
 
-variable "pub-sub-count" {
-  type = number
-}
-
-variable "pvt-app-count" {
-  type = number
-}
-
-variable "pvt-db-count" {
-  type = number
+variable "tier-usage-status-list" {
+  type = list(number)
 }
 
 ##
 
 # Instance Module Variables
-variable "key-name" {
-  type = string
+
+variable "instance-count" {
+  type = number
 }
 
-variable "bastion-ami" {
-  type = string
+variable "instance-ami-list" {
+  type = list(string)
 }
 
-variable "bastion-type" {
-  type = string
+variable "instance-type-list" {
+  type = list(string)
 }
 
-variable "grafana-ami" {
-  type = string
+variable "instance-sub-id-list" {
+  type = list(string)
 }
 
-variable "grafana-type" {
-  type = string
+variable "instance-key-name-list" {
+  type = list(string)
 }
 
 ##
@@ -63,10 +56,6 @@ variable "k8s-master-ami" {
 }
 
 variable "k8s-master-type" {
-  type = string
-}
-
-variable "k8s-master-pvt-ip" {
   type = string
 }
 
@@ -88,6 +77,10 @@ variable "k8s-node-asg-max" {
 
 variable "k8s-node-asg-desired" {
   type = number
+}
+
+variable "k8s-key-name" {
+  type = string
 }
 
 ##

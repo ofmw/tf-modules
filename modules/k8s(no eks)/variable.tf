@@ -2,21 +2,20 @@ variable "vpc-id" {
   type = string
 }
 
-variable "pub-sub-cidr" {
-  type = list(string)
-}
-
-variable "pvt-sub-app-cidr" {
-  type = list(string)
-}
-
-variable "key-name" {
+variable "pub-sub-id" {
   type = string
 }
 
-variable "k8s-master-depends-on" {
+variable "pvt-sub-ids" {
   type = list(string)
-  #aws_lb_target_group.k8s-prometheus-tg-9090
+}
+
+variable "pvt-sub-cidr-blocks" {
+  type = list(string)
+}
+
+variable "k8s-key-name" {
+  type = string
 }
 
 variable "k8s-master-ami" {
@@ -25,11 +24,6 @@ variable "k8s-master-ami" {
 
 variable "k8s-master-type" {
   type = string
-}
-
-variable "k8s-master-pvt-ip" {
-  type    = string
-  default = "172.0.20.10"
 }
 
 variable "k8s-node-ami" {
@@ -63,9 +57,5 @@ variable "k8s-node-asg-desired" {
 }
 
 variable "k8s-monitor-alb-id" {
-  type = string
-}
-
-variable "pvt-app-sub-cidr-block" {
   type = string
 }

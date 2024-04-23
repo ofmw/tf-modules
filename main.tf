@@ -3,48 +3,44 @@ module "provider" {
 }
 
 module "vpc" {
-  source            = "./modules/vpc"
-  vpc-cidr          = var.vpc-cidr
-  availability-zone = var.availability-zone
-  pub-sub-count     = var.pub-sub-count
-  pvt-app-count     = var.pvt-app-count
-  pvt-db-count      = var.pvt-db-count
+  source                 = "./modules/vpc"
+  vpc-cidr               = var.vpc-cidr
+  availability-zone      = var.availability-zone
+  tier-usage-status-list = var.tier-usage-status-list
 }
 
 module "instance" {
   # count = 1 or 0
-  source             = "./modules/instance"
-  vpc-id             = module.vpc.vpc-id
-  pub-sub-cidr       = module.vpc.pub-sub-id[*]
-  pvt-sub-app-cidr   = module.vpc.pvt-app-sub-id[*]
-  key-name           = var.key-name
-  bastion-ami        = var.bastion-ami
-  bastion-type       = var.bastion-type
-  grafana-depends-on = module.elb.k8s-grafana-tg-3000
-  grafana-ami        = var.grafana-ami
-  grafana-type       = var.grafana-type
-  my-ip              = var.my-ip
+  source                 = "./modules/instance"
+  env                    = var.env
+  naming                 = var.naming
+  instance-count         = var.instance-count
+  instance-ami-list      = var.instance-ami-list
+  instance-type-list     = var.instance-type-list
+  instance-sub-id-list   = module.vpc.aws
+  instance-key-name-list = var.instance-key-name-list
+  vpc-id                 = module.vpc.vpc-id
+  availability-zone      = var.availability-zone
+  my-ip                  = var.my-ip
 }
 
 module "k8s" {
-  count                  = 1
-  source                 = "./modules/k8s(no eks)"
-  vpc-id                 = module.vpc.vpc-id
-  pub-sub-cidr           = module.vpc.pub-sub-id[*]
-  pvt-sub-app-cidr       = module.vpc.pvt-app-sub-id[*]
-  key-name               = var.key-name
-  k8s-master-depends-on  = module.elb.k8s-prometheus-tg-9090
-  k8s-master-ami         = var.k8s-master-ami
-  k8s-master-type        = var.k8s-master-type
-  k8s-master-pvt-ip      = var.k8s-master-pvt-ip
-  k8s-node-ami           = var.k8s-node-ami
-  k8s-node-type          = var.k8s-node-type
-  k8s-node-asg-min       = var.k8s-node-asg-min
-  k8s-node-asg-max       = var.k8s-node-asg-max
-  k8s-node-asg-desired   = var.k8s-node-asg-desired
-  k8s-service-tg-80      = module.elb.k8s-service-tg-80
-  k8s-monitor-alb-id     = module.elb.k8s-monitor-alb-id
-  pvt-app-sub-cidr-block = module.vpc.cloud-pvt-app-sub-cidr[0]
+  count                = 1
+  source               = "./modules/k8s(no eks)"
+  vpc-id               = module.vpc.vpc-id
+  pub-sub-id           = module.vpc.pub-sub.id
+  pvt-sub-ids          = [module.vpc.pvt-sub-list[*].id]
+  pvt-sub-cidr-blocks  = [module.vpc.pvt-sub-list[*].cidr_block]
+  k8s-key-name         = var.k8s-key-name
+  k8s-master-ami       = var.k8s-master-ami
+  k8s-master-type      = var.k8s-master-type
+  k8s-node-ami         = var.k8s-node-ami
+  k8s-node-type        = var.k8s-node-type
+  k8s-node-asg-min     = var.k8s-node-asg-min
+  k8s-node-asg-max     = var.k8s-node-asg-max
+  k8s-node-asg-desired = var.k8s-node-asg-desired
+  k8s-service-tg-80    = module.elb.k8s-service-tg-80
+  k8s-monitor-alb-id   = module.elb.k8s-monitor-alb-id
 }
 
 module "elb" {

@@ -2,13 +2,6 @@ resource "aws_security_group" "k8s_master_sg" {
   name   = "k8s-master-sg"
   vpc_id = var.vpc-id
 
-  ingress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = [aws_security_group.cloud_bastion_sg.id]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -21,21 +14,12 @@ resource "aws_security_group" "k8s_master_sg" {
   }
 }
 
-resource "aws_security_group_rule" "k8s_master_sg_rule_1" {
+resource "aws_security_group_rule" "k8s_master_sg_rule" {
   type                     = "ingress"
   from_port                = 0
   to_port                  = 0
   protocol                 = "tcp"
   source_security_group_id = aws_security_group.k8s_node_sg.id
-  security_group_id        = aws_security_group.k8s_master_sg.id
-}
-
-resource "aws_security_group_rule" "k8s_master_sg_rule_2" {
-  type                     = "ingress"
-  from_port                = 0
-  to_port                  = 0
-  protocol                 = "tcp"
-  source_security_group_id = var.k8s-monitor-alb-id
   security_group_id        = aws_security_group.k8s_master_sg.id
 }
 
@@ -63,12 +47,11 @@ resource "aws_security_group" "k8s_node_sg" {
 }
 
 resource "aws_instance" "k8s_master" {
-  depends_on      = var.k8s-master-depends-on
   ami             = var.k8s-master-ami
   instance_type   = var.k8s-master-type
-  subnet_id       = var.pvt-sub-app-cidr[0].id
-  private_ip      = var.k8s-master-pvt-ip
-  key_name        = var.key-name
+  subnet_id       = var.pvt-sub-ids[0]
+  private_ip      = cidrhost(var.pvt-sub-cidr-blocks[0], 10)
+  key_name        = var.k8s-key-name
   security_groups = [aws_security_group.k8s_master_sg.id]
 
   root_block_device {
@@ -81,13 +64,12 @@ resource "aws_instance" "k8s_master" {
 }
 
 resource "aws_instance" "k8s_node" {
-  count = 0
+  count           = 0
   depends_on      = var.k8s-master-depends-on
   ami             = var.k8s-master-ami
   instance_type   = var.k8s-master-type
   subnet_id       = var.pvt-sub-app-cidr[0].id
-  private_ip      = cidrhost(var.pvt-app-sub-cidr-block, 10)
-  key_name        = var.key-name
+  key_name        = var.k8s-key-name
   security_groups = [aws_security_group.k8s_master_sg.id]
 
   root_block_device {
@@ -105,7 +87,7 @@ resource "aws_launch_template" "k8s_node_tpl" {
   name_prefix   = "k8s-node-"
   image_id      = var.k8s-node-ami
   instance_type = var.k8s-node-type
-  key_name      = var.key-name
+  key_name      = var.k8s-key-name
 
   vpc_security_group_ids = [aws_security_group.k8s_node_sg.id]
 
@@ -143,7 +125,7 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
   min_size            = var.k8s-node-asg-min
   max_size            = var.k8s-node-asg-max
   desired_capacity    = var.k8s-node-asg-desired
-  vpc_zone_identifier = var.pvt-sub-app-cidr
+  vpc_zone_identifier = var.pvt-sub-ids
   target_group_arns   = var.k8s-service-tg-80
 
   tag {
