@@ -65,7 +65,6 @@ resource "aws_instance" "k8s_master" {
 
 resource "aws_instance" "k8s_node" {
   count           = 0
-  depends_on      = var.k8s-master-depends-on
   ami             = var.k8s-master-ami
   instance_type   = var.k8s-master-type
   subnet_id       = var.pvt-sub-app-cidr[0].id
