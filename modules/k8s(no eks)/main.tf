@@ -134,60 +134,17 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
   }
 }
 
-resource "aws_cloudwatch_metric_alarm" "high_cpu_usage" {
-  # count = 1 or 0
-  alarm_name          = "high-cpu-usage"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "120"
-  statistic           = "Average"
-  threshold           = "70"
-  alarm_description   = "high cpu usage"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.k8s_node_asg.name
-  }
-
-  actions_enabled = true
-  alarm_actions   = [aws_autoscaling_policy.scale_up.arn]
-}
-
-resource "aws_cloudwatch_metric_alarm" "low_cpu_usage" {
-  # count = 1 or 0
-  alarm_name          = "low-cpu-usage"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/EC2"
-  period              = "120"
-  statistic           = "Average"
-  threshold           = "30"
-  alarm_description   = "low cpu usage"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.k8s_node_asg.name
-  }
-
-  actions_enabled = true
-  alarm_actions   = [aws_autoscaling_policy.scale_down.arn]
-}
-
-resource "aws_autoscaling_policy" "scale_up" {
-  # count = 1 or 0
-  name                   = "scale-up"
+resource "aws_autoscaling_policy" "cpu_scaling_policy" {
+  name                   = "cpu-scaling-policy"
   scaling_adjustment     = 1
   adjustment_type        = "ChangeInCapacity"
-  cooldown               = "30"
+  cooldown               = 30
   autoscaling_group_name = aws_autoscaling_group.k8s_node_asg.name
-}
 
-resource "aws_autoscaling_policy" "scale_down" {
-  # count = 1 or 0
-  name                   = "scale-down"
-  scaling_adjustment     = -1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = "30"
-  autoscaling_group_name = aws_autoscaling_group.k8s_node_asg.name
+  target_tracking_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ASGAverageCPUUtilization"
+    }
+    target_value = 70
+  }
 }

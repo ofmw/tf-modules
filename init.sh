@@ -29,3 +29,6 @@ sed -i 's/region\s*=\s*"[^"]*"/region = "'"${region}"'"/' terraform.tfvars
 # tfNum=$(grep -n "zone-id" terraform.tfvars | cut -d: -f1)
 # sed -i 's/zone-id\s*=\s*"[^"]*"/zone-id = "'"${zoneId}"'"/' terraform.tfvars
 # echo "Complete"
+
+# # Get Certificates
+# aws acm list-certificates --query "CertificateSummaryList[?DomainName == 'ofmw.site'].CertificateArn" --output text
