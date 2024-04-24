@@ -1,4 +1,5 @@
 # Global Variables
+region = "us-east-1"
 env    = "stg"
 naming = "TTst"
 
@@ -29,7 +30,7 @@ k8s-node-asg-desired = 3
 instance-class = "db.r5.large"
 
 # Route53 Module Variables
-zone-id = "Z08062961F3KIWZPT1TQZ"
+zone-id     = "Z08062961F3KIWZPT1TQZ"
 record-name = "www"
 record-type = "CNAME"
 record-ttl  = "300"

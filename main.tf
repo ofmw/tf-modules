@@ -1,5 +1,6 @@
 module "provider" {
   source = "./modules/provider"
+  region = var.region
 }
 
 module "vpc" {
@@ -93,5 +94,4 @@ module "vpn" {
   pub-rtb-id        = module.vpc.pub-rtb-id
   my-ip             = var.my-ip
   onprem-cidr-block = var.onprem-cidr-block
-
 }
