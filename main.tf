@@ -48,7 +48,7 @@ module "elb" {
   source            = "./modules/elb"
   vpc-id            = module.vpc.vpc-id
   pub-sub-ids       = module.vpc.pub-sub[*].id
-  grafana-server-id = module.instance.ec2-instances[1].id
+  grafana-server-id = module.instance.ec2-instances[2].id
   k8s-master-id     = module.k8s[0].k8s-master-instance.id
 }
 
@@ -87,7 +87,7 @@ module "s3" {
 }
 
 module "vpn" {
-  count             = 1
+  count             = 0
   depends_on        = [module.vpc]
   source            = "./modules/vpn"
   vpc-id            = module.vpc.vpc-id
