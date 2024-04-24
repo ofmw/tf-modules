@@ -4,7 +4,7 @@ naming = "TTst"
 
 # VPC Module Variables
 vpc-cidr               = "172.0.0.0/16"
-availability-zone      = ["ap-east-1a", "ap-east-1c"]
+availability-zone      = ["us-east-1a", "us-east-1c"]
 tier-usage-status-list = [1, 1, 0]
 
 # Instance Module Variables
@@ -29,13 +29,13 @@ k8s-node-asg-desired = 3
 instance-class = "db.r5.large"
 
 # Route53 Module Variables
-zone-name   = "ofmw.site"
+zone-id = "Z08062961F3KIWZPT1TQZ"
 record-name = "www"
 record-type = "CNAME"
 record-ttl  = "300"
 
 # S3 Module Variables
-bucket-name = "TTst-bucket"
+bucket-name = "hangaramit01-bucket-test"
 
 # VPN Module Variables
 my-ip             = "61.85.118.29"

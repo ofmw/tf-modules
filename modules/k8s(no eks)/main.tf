@@ -76,7 +76,7 @@ resource "aws_instance" "k8s_node" {
   }
 
   tags = {
-    Name = "k8s-master"
+    Name = "k8s-node"
   }
 }
 

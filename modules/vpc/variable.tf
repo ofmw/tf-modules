@@ -1,3 +1,14 @@
+# # Global Variables
+# variable "env" {
+#   type = string
+# }
+
+# variable "naming" {
+#   type = string
+# }
+
+#
+
 variable "vpc-cidr" {
   type    = string
   default = "172.0.0.0/16"

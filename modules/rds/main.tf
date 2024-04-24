@@ -36,7 +36,7 @@ resource "aws_rds_cluster" "rds_cluster" {
   availability_zones      = var.availability-zone
   database_name           = "employee"
   master_username         = "admin"
-  master_password         = "admin123"
+  master_password         = "gogoadmin"
   backup_retention_period = 7
   preferred_backup_window = "07:00-09:00"
   db_subnet_group_name    = aws_db_subnet_group.db_sbg.name

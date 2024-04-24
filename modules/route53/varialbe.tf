@@ -1,11 +1,5 @@
-variable "zone-name" {
-  type    = string
-  default = "final.com"
-}
-
 variable "record-name" {
   type = string
-
 }
 
 variable "record-type" {
@@ -19,5 +13,9 @@ variable "record-ttl" {
 }
 
 variable "record-records" {
+  type = string
+}
+
+variable "zone-id" {
   type = string
 }

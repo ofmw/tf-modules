@@ -7,7 +7,7 @@ output "pub-sub" {
 }
 
 output "pvt-sub-list" {
-  value = [aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_2tier[0]]
+  value = [aws_subnet.cloud_pvt_sub_1tier[*], aws_subnet.cloud_pvt_sub_2tier[*]]
 }
 
 # For VPN
@@ -17,4 +17,8 @@ output "pub-route" {
 
 output "pub-rtb-id" {
   value = aws_route_table.cloud_pub_rtb.id
+}
+
+output "instance-sub-list" {
+  value = [aws_subnet.cloud_pub_sub[0], aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_2tier[0]]
 }

@@ -1,14 +1,7 @@
-provider "aws" {
-  alias  = "east"
-  region = "us-east-1"
-}
-
 resource "aws_wafv2_web_acl" "waf" {
-  name        = "managed-acfp-example"
+  name        = "managed-acfp-test"
   description = "Example of a managed ACFP rule."
   scope       = "CLOUDFRONT"
-  provider    = aws.east
-
 
   default_action {
     allow {}

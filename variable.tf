@@ -97,7 +97,7 @@ variable "instance-class" {
 ##
 
 # Route53 Module Variables
-variable "zone-name" {
+variable "zone-id" {
   type = string
 }
 

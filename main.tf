@@ -17,7 +17,7 @@ module "instance" {
   instance-count             = var.instance-count
   instance-ami-list          = var.instance-ami-list
   instance-type-list         = var.instance-type-list
-  instance-sub-id-list       = module.vpc.pvt-sub-list[*].id
+  instance-sub-id-list       = module.vpc.instance-sub-list[*].id
   instance-key-name-list     = var.instance-key-name-list
   instance-pub-ip-usage-list = var.instance-pub-ip-usage-list
   instance-name-list         = var.instance-name-list
@@ -30,8 +30,8 @@ module "k8s" {
   count                = 1
   source               = "./modules/k8s(no eks)"
   vpc-id               = module.vpc.vpc-id
-  pvt-sub-ids          = module.vpc.pvt-sub-list[*].id
-  pvt-sub-cidr-blocks  = module.vpc.pvt-sub-list[*].cidr_block
+  pvt-sub-ids          = module.vpc.pvt-sub-list[0][*].id
+  pvt-sub-cidr-blocks  = module.vpc.pvt-sub-list[0][*].cidr_block
   k8s-key-name         = var.k8s-key-name
   k8s-master-ami       = var.k8s-master-ami
   k8s-master-type      = var.k8s-master-type
@@ -62,7 +62,7 @@ module "rds" {
 
 module "route53" {
   source         = "./modules/route53"
-  zone-name      = var.zone-name
+  zone-id        = var.zone-id
   record-name    = var.record-name
   record-type    = var.record-type
   record-ttl     = var.record-ttl

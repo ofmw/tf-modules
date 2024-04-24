@@ -141,21 +141,18 @@ resource "aws_route" "cloud_pub_route" {
 
 # Associate Private Subnets with NAT Gateway
 resource "aws_route" "cloud-pvt-1tier-route" {
-  count                  = length(aws_subnet.cloud_pvt_sub_1tier)
   route_table_id         = aws_route_table.cloud_pvt_rtb_1tier.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
 }
 
 resource "aws_route" "cloud-pvt-2tier-route" {
-  count                  = length(aws_subnet.cloud_pvt_sub_2tier)
   route_table_id         = aws_route_table.cloud_pvt_rtb_2tier.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
 }
 
 resource "aws_route" "cloud-pvt-3tier-route" {
-  count                  = length(aws_subnet.cloud_pvt_sub_3tier)
   route_table_id         = aws_route_table.cloud_pvt_rtb_3tier.id
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id         = aws_nat_gateway.cloud_ngw.id
