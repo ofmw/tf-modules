@@ -20,5 +20,5 @@ output "pub-rtb-id" {
 }
 
 output "instance-sub-list" {
-  value = [aws_subnet.cloud_pub_sub[0], aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_2tier[0]]
+  value = [aws_subnet.cloud_pub_sub[0], aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_1tier[0], aws_subnet.cloud_pvt_sub_2tier[0]]
 }

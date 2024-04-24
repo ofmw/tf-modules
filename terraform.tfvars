@@ -9,12 +9,12 @@ availability-zone      = ["us-east-1a", "us-east-1c"]
 tier-usage-status-list = [1, 1, 0]
 
 # Instance Module Variables
-instance-count             = 2
-instance-ami-list          = ["ami-0a699202e5027c10d", "ami-0e2e7790c9fde3da2"]
-instance-type-list         = ["t3.micro", "t3.small"]
-instance-key-name-list     = ["cloud-ec2", "cloud-ec2"]
-instance-pub-ip-usage-list = [true, false]
-instance-name-list         = ["bastion", "monitor"]
+instance-count             = 5
+instance-ami-list          = ["ami-0a699202e5027c10d", "ami-0cec00b5ac43c6c41", "ami-0e2e7790c9fde3da2", "ami-02439994b12ae33f3", "ami-0a699202e5027c10d"]
+instance-type-list         = ["t3.micro", "t3.small", "t3.small", "t3.small", "t3.micro"]
+instance-key-name-list     = ["cloud-ec2", "cloud-ec2", "cloud-ec2", "cloud-ec2", "cloud-ec2"]
+instance-pub-ip-usage-list = [true, true, false, false, false]
+instance-name-list         = ["bastion", "traffic", "monitor", "monitor-monitor", "rds-bastion"]
 
 # K8S Module Variables
 k8s-key-name         = "cloud-ec2"
