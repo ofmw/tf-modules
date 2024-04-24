@@ -44,6 +44,14 @@ variable "instance-key-name-list" {
   type = list(string)
 }
 
+variable "instance-pub-ip-usage-list" {
+  type = list(bool)
+}
+
+variable "instance-name-list" {
+  type = list(string)
+}
+
 ##
 
 # K8S Module Variables

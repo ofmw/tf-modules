@@ -8,10 +8,12 @@ availability-zone      = ["ap-east-1a", "ap-east-1c"]
 tier-usage-status-list = [1, 1, 0]
 
 # Instance Module Variables
-instance-count         = 2
-instance-ami-list      = ["ami-0a699202e5027c10d", "ami-080e1f13689e07408"]
-instance-type-list     = ["t3.micro", "t3.small"]
-instance-key-name-list = ["cloud-ec2", "cloud-ec2"]
+instance-count             = 2
+instance-ami-list          = ["ami-0a699202e5027c10d", "ami-0e2e7790c9fde3da2"]
+instance-type-list         = ["t3.micro", "t3.small"]
+instance-key-name-list     = ["cloud-ec2", "cloud-ec2"]
+instance-pub-ip-usage-list = [true, false]
+instance-name-list         = ["bastion", "monitor"]
 
 # K8S Module Variables
 k8s-key-name         = "cloud-ec2"
@@ -27,14 +29,14 @@ k8s-node-asg-desired = 3
 instance-class = "db.r5.large"
 
 # Route53 Module Variables
-zone-name   = "value"
-record-name = "value"
+zone-name   = "ofmw.site"
+record-name = "www"
 record-type = "CNAME"
 record-ttl  = "300"
 
 # S3 Module Variables
-bucket-name = "value"
+bucket-name = "TTst-bucket"
 
 # VPN Module Variables
 my-ip             = "61.85.118.29"
-onprem-cidr-block = "192.168.0.84"
+onprem-cidr-block = "192.168.0.0/24"

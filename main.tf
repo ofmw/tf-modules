@@ -11,17 +11,19 @@ module "vpc" {
 
 module "instance" {
   # count = 1 or 0
-  source                 = "./modules/instance"
-  env                    = var.env
-  naming                 = var.naming
-  instance-count         = var.instance-count
-  instance-ami-list      = var.instance-ami-list
-  instance-type-list     = var.instance-type-list
-  instance-sub-id-list   = module.vpc.pvt-sub-list[*].id
-  instance-key-name-list = var.instance-key-name-list
-  vpc-id                 = module.vpc.vpc-id
-  availability-zone      = var.availability-zone
-  my-ip                  = var.my-ip
+  source                     = "./modules/instance"
+  env                        = var.env
+  naming                     = var.naming
+  instance-count             = var.instance-count
+  instance-ami-list          = var.instance-ami-list
+  instance-type-list         = var.instance-type-list
+  instance-sub-id-list       = module.vpc.pvt-sub-list[*].id
+  instance-key-name-list     = var.instance-key-name-list
+  instance-pub-ip-usage-list = var.instance-pub-ip-usage-list
+  instance-name-list         = var.instance-name-list
+  vpc-id                     = module.vpc.vpc-id
+  availability-zone          = var.availability-zone
+  my-ip                      = var.my-ip
 }
 
 module "k8s" {
