@@ -34,7 +34,7 @@ resource "aws_rds_cluster" "rds_cluster" {
   engine                  = "aurora-mysql"
   engine_version          = "5.7.mysql_aurora.2.11.4"
   availability_zones      = var.availability-zone
-  database_name           = "exampledb"
+  database_name           = "employee"
   master_username         = "admin"
   master_password         = "admin123"
   backup_retention_period = 7

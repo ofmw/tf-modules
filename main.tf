@@ -84,6 +84,7 @@ module "s3" {
 }
 
 module "vpn" {
+  count             = 1
   depends_on        = [module.vpc]
   source            = "./modules/vpn"
   vpc-id            = module.vpc.vpc-id
