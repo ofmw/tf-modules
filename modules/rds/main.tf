@@ -30,7 +30,7 @@ resource "aws_db_subnet_group" "db_sbg" {
 }
 
 resource "aws_rds_cluster" "rds_cluster" {
-  cluster_identifier      = "${var.env}--aurora-cluster"
+  cluster_identifier      = "${var.env}-aurora-cluster"
   engine                  = "aurora-mysql"
   engine_version          = "5.7.mysql_aurora.2.11.4"
   availability_zones      = var.availability-zone
@@ -45,7 +45,7 @@ resource "aws_rds_cluster" "rds_cluster" {
 }
 
 resource "aws_rds_cluster_instance" "example_instance" {
-  identifier         = "${var.env}--aurora-instance"
+  identifier         = "${var.env}-aurora-instance"
   cluster_identifier = aws_rds_cluster.rds_cluster.id
   instance_class     = var.db-instance-class
   engine             = aws_rds_cluster.rds_cluster.engine
