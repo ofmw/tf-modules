@@ -48,6 +48,29 @@ resource "aws_lb_target_group_attachment" "k8s_grafana_target" {
   port             = 3000
 }
 
+resource "aws_lb_target_group" "k8s_grafana_grafana_tg_3000" {
+  name     = "${var.env}-k8s-grafana-grafana-tg-3000"
+  port     = 3000
+  protocol = "HTTP"
+  vpc_id   = var.vpc-id
+
+  health_check {
+    path                = "/"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+resource "aws_lb_target_group_attachment" "k8s_grafana_grafana_target" {
+  target_group_arn = aws_lb_target_group.k8s_grafana_grafana_tg_3000.arn
+  target_id        = var.grafana-server-id
+  port             = 3000
+}
+
 resource "aws_lb_target_group" "k8s_prometheus_tg_9090" {
   name     = "${var.env}-k8s-prometheus-tg-9090"
   port     = 9090
@@ -160,6 +183,17 @@ resource "aws_lb_listener" "k8s_grafana_listener_3000" {
   }
 }
 
+resource "aws_lb_listener" "k8s_grafana_grafana_listener_3030" {
+  load_balancer_arn = aws_lb.k8s_monitor_alb.arn
+  port              = 3030
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.k8s_grafana_grafana_tg_3000.arn
+  }
+}
+
 resource "aws_lb_listener" "k8s_prometheus_listener_9090" {
   load_balancer_arn = aws_lb.k8s_monitor_alb.arn
   port              = 9090
@@ -215,5 +249,5 @@ resource "aws_lb_listener" "k8s_service_listener_443" {
     target_group_arn = aws_lb_target_group.k8s_service_tg_80.arn
   }
 
-  certificate_arn = "arn:aws:acm:us-east-1:637423369403:certificate/8b776432-8b76-4810-8807-bacdadbfb231"
+  certificate_arn = "arn:aws:acm:us-east-1:637423369403:certificate/583ea4b2-202f-43cd-aa20-69eb2adb842f"
 }

@@ -31,4 +31,4 @@ sed -i 's/region\s*=\s*"[^"]*"/region = "'"${region}"'"/' terraform.tfvars
 # echo "Complete"
 
 # # Get Certificates
-# aws acm list-certificates --query "CertificateSummaryList[?DomainName == 'ofmw.site'].CertificateArn" --output text
+# aws acm list-certificates --query "CertificateSummaryList[?DomainName == 'adnu04046.shop'].CertificateArn" --output text
