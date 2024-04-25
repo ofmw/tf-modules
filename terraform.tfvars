@@ -23,20 +23,20 @@ k8s-master-type      = "t3.medium"
 k8s-node-ami         = "ami-0952a1bbbbe7ddef5"
 k8s-node-type        = "t3.small"
 k8s-node-asg-min     = 3
-k8s-node-asg-max     = 10
+k8s-node-asg-max     = 20
 k8s-node-asg-desired = 3
 
 # RDS Module Variables
 instance-class = "db.r5.large"
 
 # Route53 Module Variables
-zone-id     = "Z08062961F3KIWZPT1TQZ"
+zone-id     = "Z06843161NL0E51475IU6"
 record-name = "www"
 record-type = "CNAME"
 record-ttl  = "300"
 
 # S3 Module Variables
-bucket-name = "hangaramit01-bucket-test"
+bucket-name = "hangaramit-s3-bucket"
 
 # VPN Module Variables
 my-ip             = "61.85.118.29"

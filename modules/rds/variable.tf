@@ -1,3 +1,10 @@
+# Global Variables
+variable "env" {
+  type = string
+}
+
+#
+
 variable "vpc-id" {
   type = string
 }

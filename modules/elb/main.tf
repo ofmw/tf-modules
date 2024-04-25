@@ -26,7 +26,7 @@
 # ※AutoScalingGroup의 경우 aws_lb_target_group_attachment를 사용하지 않고 리소스 안에 직접 정의한다.
 
 resource "aws_lb_target_group" "k8s_grafana_tg_3000" {
-  name     = "k8s-grafana-tg-3000"
+  name     = "${var.env}-k8s-grafana-tg-3000"
   port     = 3000
   protocol = "HTTP"
   vpc_id   = var.vpc-id
@@ -49,7 +49,7 @@ resource "aws_lb_target_group_attachment" "k8s_grafana_target" {
 }
 
 resource "aws_lb_target_group" "k8s_prometheus_tg_9090" {
-  name     = "k8s-prometheus-tg-9090"
+  name     = "${var.env}-k8s-prometheus-tg-9090"
   port     = 9090
   protocol = "HTTP"
   vpc_id   = var.vpc-id
@@ -98,7 +98,7 @@ resource "aws_lb_target_group_attachment" "k8s_prometheus_target" {
 # }
 
 resource "aws_lb_target_group" "k8s_service_tg_80" {
-  name     = "k8s-service-tg-80"
+  name     = "${var.env}-k8s-service-tg-80"
   port     = 80
   protocol = "HTTP"
   vpc_id   = var.vpc-id
@@ -116,7 +116,7 @@ resource "aws_lb_target_group" "k8s_service_tg_80" {
 
 # Security Group
 resource "aws_security_group" "k8s_alb_sg" {
-  name   = "k8s-alb-sg"
+  name   = "${var.env}-k8s-alb-sg"
   vpc_id = var.vpc-id
 
 
@@ -135,14 +135,14 @@ resource "aws_security_group" "k8s_alb_sg" {
   }
 
   tags = {
-    Name = "k8s-alb-sg"
+    Name = "${var.env}-k8s-alb-sg"
   }
 }
 
 # Load Balancer
 
 resource "aws_lb" "k8s_monitor_alb" {
-  name               = "k8s-monitor-alb"
+  name               = "${var.env}-k8s-monitor-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.k8s_alb_sg.id]
@@ -172,7 +172,7 @@ resource "aws_lb_listener" "k8s_prometheus_listener_9090" {
 }
 
 resource "aws_lb" "k8s_service_alb" {
-  name               = "k8s-service-alb"
+  name               = "${var.env}-k8s-service-alb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.k8s_alb_sg.id]

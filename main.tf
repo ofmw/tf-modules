@@ -5,6 +5,7 @@ module "provider" {
 
 module "vpc" {
   source                 = "./modules/vpc"
+  env                    = var.env
   vpc-cidr               = var.vpc-cidr
   availability-zone      = var.availability-zone
   tier-usage-status-list = var.tier-usage-status-list
@@ -14,7 +15,6 @@ module "instance" {
   # count = 1 or 0
   source                     = "./modules/instance"
   env                        = var.env
-  naming                     = var.naming
   instance-count             = var.instance-count
   instance-ami-list          = var.instance-ami-list
   instance-type-list         = var.instance-type-list
@@ -30,6 +30,7 @@ module "instance" {
 module "k8s" {
   count                = 1
   source               = "./modules/k8s(no eks)"
+  env                  = var.env
   vpc-id               = module.vpc.vpc-id
   pvt-sub-ids          = module.vpc.pvt-sub-list[0][*].id
   pvt-sub-cidr-blocks  = module.vpc.pvt-sub-list[0][*].cidr_block
@@ -46,6 +47,7 @@ module "k8s" {
 
 module "elb" {
   source            = "./modules/elb"
+  env               = var.env
   vpc-id            = module.vpc.vpc-id
   pub-sub-ids       = module.vpc.pub-sub[*].id
   grafana-server-id = module.instance.ec2-instances[2].id
@@ -54,6 +56,7 @@ module "elb" {
 
 module "rds" {
   source            = "./modules/rds"
+  env               = var.env
   vpc-id            = module.vpc.vpc-id
   availability-zone = var.availability-zone
   k8s-node-sg-id    = module.k8s[0].k8s-node-sg.id
@@ -72,6 +75,7 @@ module "route53" {
 
 module "waf" {
   source = "./modules/waf"
+  env    = var.env
 }
 
 module "cloudfront" {
@@ -83,6 +87,7 @@ module "cloudfront" {
 
 module "s3" {
   source      = "./modules/s3"
+  env         = var.env
   bucket-name = var.bucket-name
 }
 
@@ -90,6 +95,7 @@ module "vpn" {
   count             = 0
   depends_on        = [module.vpc]
   source            = "./modules/vpn"
+  env               = var.env
   vpc-id            = module.vpc.vpc-id
   pub-rtb-id        = module.vpc.pub-rtb-id
   my-ip             = var.my-ip

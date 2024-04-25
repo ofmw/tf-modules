@@ -5,7 +5,7 @@ resource "aws_customer_gateway" "onprem_openswan" {
   type       = "ipsec.1"
 
   tags = {
-    Name = "onprem-openswan"
+    Name = "${var.env}-onprem-openswan"
   }
 }
 
@@ -14,7 +14,7 @@ resource "aws_vpn_gateway" "cloud_vgw" {
   vpc_id = var.vpc-id
 
   tags = {
-    Name = "cloud-vgw"
+    Name = "${var.env}-cloud-vgw"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_vpn_connection" "cloud-onprem-vpn" {
   static_routes_only  = true
 
   tags = {
-    Name = "cloud-onprem-vpn"
+    Name = "${var.env}-cloud-onprem-vpn"
   }
 }
 

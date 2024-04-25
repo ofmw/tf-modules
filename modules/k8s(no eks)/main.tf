@@ -1,5 +1,5 @@
 resource "aws_security_group" "k8s_master_sg" {
-  name   = "k8s-master-sg"
+  name   = "${var.env}-k8s-master-sg"
   vpc_id = var.vpc-id
 
   egress {
@@ -24,7 +24,7 @@ resource "aws_security_group_rule" "k8s_master_sg_rule" {
 }
 
 resource "aws_security_group" "k8s_node_sg" {
-  name   = "k8s-node-sg"
+  name   = "${var.env}-k8s-node-sg"
   vpc_id = var.vpc-id
 
   ingress {
@@ -42,7 +42,7 @@ resource "aws_security_group" "k8s_node_sg" {
   }
 
   tags = {
-    Name = "k8s-node-sg"
+    Name = "${var.env}-k8s-node-sg"
   }
 }
 
@@ -59,7 +59,7 @@ resource "aws_instance" "k8s_master" {
   }
 
   tags = {
-    Name = "k8s-master"
+    Name = "${var.env}-k8s-master"
   }
 }
 
@@ -76,14 +76,14 @@ resource "aws_instance" "k8s_node" {
   }
 
   tags = {
-    Name = "k8s-node"
+    Name = "${var.env}-k8s-node"
   }
 }
 
 resource "aws_launch_template" "k8s_node_tpl" {
   # count = 1 or 0
   depends_on    = [aws_instance.k8s_master]
-  name_prefix   = "k8s-node-"
+  name_prefix   = "${var.env}-k8s-node-"
   image_id      = var.k8s-node-ami
   instance_type = var.k8s-node-type
   key_name      = var.k8s-key-name
@@ -109,7 +109,7 @@ resource "aws_launch_template" "k8s_node_tpl" {
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "asg-instance"
+      Name = "${var.env}-asg-instance-tpl"
     }
   }
 }
@@ -129,7 +129,7 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
 
   tag {
     key                 = "Name"
-    value               = "asg-instance"
+    value               = "${var.env}-asg-instance"
     propagate_at_launch = true
   }
 }

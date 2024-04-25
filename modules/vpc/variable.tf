@@ -1,11 +1,7 @@
-# # Global Variables
-# variable "env" {
-#   type = string
-# }
-
-# variable "naming" {
-#   type = string
-# }
+# Global Variables
+variable "env" {
+  type = string
+}
 
 #
 

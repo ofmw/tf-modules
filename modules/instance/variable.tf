@@ -3,10 +3,6 @@ variable "env" {
   type = string
 }
 
-variable "naming" {
-  type = string
-}
-
 # Instance Variables
 
 variable "instance-count" {

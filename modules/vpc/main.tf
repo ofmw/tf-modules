@@ -12,7 +12,7 @@ resource "aws_subnet" "cloud_pub_sub" {
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, count.index)
   availability_zone = var.availability-zone[count.index % length(var.availability-zone)]
   tags = {
-    Name = "cloud-pub-sub-${count.index + 1}"
+    Name = "${var.env}-pub-sub-${count.index + 1}"
   }
 }
 
@@ -23,7 +23,7 @@ resource "aws_subnet" "cloud_pvt_sub_1tier" {
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-1tier-${count.index + 1}"
+    Name = "${var.env}-pvt-1tier-${count.index + 1}"
   }
 }
 
@@ -33,7 +33,7 @@ resource "aws_subnet" "cloud_pvt_sub_2tier" {
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-2tier-${count.index + 1}"
+    Name = "${var.env}-pvt-2tier-${count.index + 1}"
   }
 }
 
@@ -43,7 +43,7 @@ resource "aws_subnet" "cloud_pvt_sub_3tier" {
   cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
-    Name = "cloud-pvt-3tier-${count.index + 1}"
+    Name = "${var.env}-pvt-3tier-${count.index + 1}"
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_subnet" "cloud_pvt_sub_3tier" {
 resource "aws_internet_gateway" "cloud_igw" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-igw"
+    Name = "${var.env}-igw"
   }
 }
 
@@ -59,7 +59,7 @@ resource "aws_internet_gateway" "cloud_igw" {
 resource "aws_route_table" "cloud_pub_rtb" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pub-rtb"
+    Name = "${var.env}-pub-rtb"
   }
 }
 
@@ -67,21 +67,21 @@ resource "aws_route_table" "cloud_pub_rtb" {
 resource "aws_route_table" "cloud_pvt_rtb_1tier" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pvt-rtb-1tier"
+    Name = "${var.env}-pvt-rtb-1tier"
   }
 }
 
 resource "aws_route_table" "cloud_pvt_rtb_2tier" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pvt-rtb-2tier"
+    Name = "${var.env}-pvt-rtb-2tier"
   }
 }
 
 resource "aws_route_table" "cloud_pvt_rtb_3tier" {
   vpc_id = aws_vpc.cloud_vpc.id
   tags = {
-    Name = "cloud-pvt-rtb-3tier"
+    Name = "${var.env}-pvt-rtb-3tier"
   }
 }
 
@@ -119,7 +119,7 @@ resource "aws_eip" "cloud_ngw_eip" {
     create_before_destroy = true
   }
   tags = {
-    Name = "cloud-ngw-eip"
+    Name = "${var.env}-ngw-eip"
   }
 }
 
@@ -128,7 +128,7 @@ resource "aws_nat_gateway" "cloud_ngw" {
   allocation_id = aws_eip.cloud_ngw_eip.id
   subnet_id     = aws_subnet.cloud_pub_sub[0].id
   tags = {
-    Name = "cloud-ngw"
+    Name = "${var.env}-ngw"
   }
 }
 

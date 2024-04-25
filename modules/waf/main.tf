@@ -1,5 +1,5 @@
 resource "aws_wafv2_web_acl" "waf" {
-  name        = "managed-acfp-test"
+  name        = "${var.env}-managed-acfp"
   description = "Example of a managed ACFP rule."
   scope       = "CLOUDFRONT"
 
@@ -8,7 +8,7 @@ resource "aws_wafv2_web_acl" "waf" {
   }
 
   rule {
-    name     = "acfp-rule-1"
+    name     = "${var.env}-acfp-rule-1"
     priority = 1
 
     override_action {
@@ -54,16 +54,14 @@ resource "aws_wafv2_web_acl" "waf" {
 
     visibility_config {
       cloudwatch_metrics_enabled = false
-      metric_name                = "friendly-rule-metric-name"
+      metric_name                = "${var.env}-friendly-rule-metric-name"
       sampled_requests_enabled   = false
     }
   }
 
   visibility_config {
     cloudwatch_metrics_enabled = false
-    metric_name                = "friendly-metric-name"
+    metric_name                = "${var.env}-friendly-metric-name"
     sampled_requests_enabled   = false
   }
-
-
 }
