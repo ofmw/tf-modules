@@ -137,7 +137,7 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
 resource "aws_autoscaling_policy" "cpu_scaling_policy" {
   name                   = "cpu-scaling-policy"
   scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
+  adjustment_type        = "TargetTrackingScaling"
   cooldown               = 30
   autoscaling_group_name = aws_autoscaling_group.k8s_node_asg.name
 
