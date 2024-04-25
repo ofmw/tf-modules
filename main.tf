@@ -74,6 +74,7 @@ module "route53" {
 }
 
 module "waf" {
+  count  = 0
   source = "./modules/waf"
   env    = var.env
 }
