@@ -71,9 +71,9 @@ resource "aws_lb_target_group_attachment" "k8s_grafana_grafana_target" {
   port             = 3000
 }
 
-resource "aws_lb_target_group" "k8s_prometheus_tg_9090" {
-  name     = "${var.env}-k8s-prometheus-tg-9090"
-  port     = 9090
+resource "aws_lb_target_group" "k8s_prometheus_tg_30909" {
+  name     = "${var.env}-k8s-prometheus-tg-30909"
+  port     = 30909
   protocol = "HTTP"
   vpc_id   = var.vpc-id
 
@@ -89,9 +89,9 @@ resource "aws_lb_target_group" "k8s_prometheus_tg_9090" {
 }
 
 resource "aws_lb_target_group_attachment" "k8s_prometheus_target" {
-  target_group_arn = aws_lb_target_group.k8s_prometheus_tg_9090.arn
+  target_group_arn = aws_lb_target_group.k8s_prometheus_tg_30909.arn
   target_id        = var.k8s-master-id
-  port             = 9090
+  port             = 30909
 }
 
 # # Stage 환경에서는 Site to Site VPN을 사용하지 않음
@@ -201,7 +201,7 @@ resource "aws_lb_listener" "k8s_prometheus_listener_9090" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.k8s_prometheus_tg_9090.arn
+    target_group_arn = aws_lb_target_group.k8s_prometheus_tg_30909.arn
   }
 }
 
