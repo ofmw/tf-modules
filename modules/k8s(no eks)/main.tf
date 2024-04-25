@@ -10,7 +10,7 @@ resource "aws_security_group" "k8s_master_sg" {
   }
 
   tags = {
-    Name = "k8s-master-sg"
+    Name = "${var.env}-k8s-master-sg"
   }
 }
 
@@ -102,14 +102,14 @@ resource "aws_launch_template" "k8s_node_tpl" {
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    sudo kubeadm join 172.0.20.10:6443 --token uktdln.ar1m1n0z97gvm31o --discovery-token-ca-cert-hash sha256:bcd1d4f9c89ad4f95c3b9f590b8c2184c731d4b86bc16b6fa9d756bf41d123b9
+    sudo kubeadm join 172.0.10.10:6443 --token uktdln.ar1m1n0z97gvm31o --discovery-token-ca-cert-hash sha256:bcd1d4f9c89ad4f95c3b9f590b8c2184c731d4b86bc16b6fa9d756bf41d123b9
     EOF
   )
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "${var.env}-asg-instance-tpl"
+      Name = "${var.env}-k8s-asg-instance-tpl"
     }
   }
 }
@@ -129,16 +129,15 @@ resource "aws_autoscaling_group" "k8s_node_asg" {
 
   tag {
     key                 = "Name"
-    value               = "${var.env}-asg-instance"
+    value               = "${var.env}-k8s-asg-instance"
     propagate_at_launch = true
   }
 }
 
 resource "aws_autoscaling_policy" "cpu_scaling_policy" {
-  name                   = "cpu-scaling-policy"
-  scaling_adjustment     = 1
-  adjustment_type        = "ChangeInCapacity"
-  cooldown               = 30
+  name        = "cpu-scaling-policy"
+  policy_type = "TargetTrackingScaling"
+
   autoscaling_group_name = aws_autoscaling_group.k8s_node_asg.name
 
   target_tracking_configuration {

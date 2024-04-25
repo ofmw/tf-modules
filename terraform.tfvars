@@ -10,7 +10,7 @@ tier-usage-status-list = [1, 1, 0]
 
 # Instance Module Variables
 instance-count             = 5
-instance-ami-list          = ["ami-0a699202e5027c10d", "ami-0cec00b5ac43c6c41", "ami-0e2e7790c9fde3da2", "ami-02439994b12ae33f3", "ami-0a699202e5027c10d"]
+instance-ami-list          = ["ami-0a699202e5027c10d", "ami-05c537410f657c6ce", "ami-0eb0c5a0e831ebf48", "ami-038009ed6c764aad8", "ami-0a699202e5027c10d"]
 instance-type-list         = ["t3.micro", "t3.small", "t3.small", "t3.small", "t3.micro"]
 instance-key-name-list     = ["cloud-ec2", "cloud-ec2", "cloud-ec2", "cloud-ec2", "cloud-ec2"]
 instance-pub-ip-usage-list = [true, true, false, false, false]

@@ -13,7 +13,7 @@ resource "aws_instance" "instance" {
   associate_public_ip_address = var.instance-pub-ip-usage-list[count.index]
 
   tags = {
-    Name = "${var.env}-${var.instance-name-list[count.index]}-${count.index}"
+    Name = "${var.env}-${var.instance-name-list[count.index]}-${count.index + 1}"
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_instance" "instance" {
 resource "aws_security_group" "instance-sg" {
   count  = var.instance-count
   vpc_id = var.vpc-id
-  name   = "${var.env}-${var.instance-name-list[count.index]}-sg-${count.index}"
+  name   = "${var.env}-${var.instance-name-list[count.index]}-sg-${count.index + 1}"
 
   ingress {
     from_port   = 0
@@ -39,7 +39,7 @@ resource "aws_security_group" "instance-sg" {
   }
 
   tags = {
-    Name = "${var.env}-${var.instance-name-list[count.index]}-sg-${count.index}"
+    Name = "${var.env}-${var.instance-name-list[count.index]}-sg-${count.index + 1}"
   }
 }
 

@@ -5,7 +5,7 @@ resource "aws_cloudfront_origin_access_identity" "default" {
 
 
 resource "aws_cloudfront_distribution" "cloudfront" {
-  web_acl_id = var.web-acl-arn
+  # web_acl_id = var.web-acl-arn
   origin {
     domain_name = var.s3-domain-name
     origin_id   = var.s3-id

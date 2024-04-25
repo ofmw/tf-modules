@@ -1,4 +1,4 @@
-resource "aws_route53_record" "bluecat495_record" {
+resource "aws_route53_record" "route53_record" {
   zone_id = var.zone-id
   name    = var.record-name
   type    = var.record-type

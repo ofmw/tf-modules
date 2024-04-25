@@ -46,12 +46,13 @@ module "k8s" {
 }
 
 module "elb" {
-  source            = "./modules/elb"
-  env               = var.env
-  vpc-id            = module.vpc.vpc-id
-  pub-sub-ids       = module.vpc.pub-sub[*].id
-  grafana-server-id = module.instance.ec2-instances[2].id
-  k8s-master-id     = module.k8s[0].k8s-master-instance.id
+  source                    = "./modules/elb"
+  env                       = var.env
+  vpc-id                    = module.vpc.vpc-id
+  pub-sub-ids               = module.vpc.pub-sub[*].id
+  grafana-server-id         = module.instance.ec2-instances[2].id
+  grafana-grafana-server-id = module.instance.ec2-instances[3].id
+  k8s-master-id             = module.k8s[0].k8s-master-instance.id
 }
 
 module "rds" {
@@ -74,6 +75,7 @@ module "route53" {
 }
 
 module "waf" {
+  count  = 0
   source = "./modules/waf"
   env    = var.env
 }
@@ -82,7 +84,7 @@ module "cloudfront" {
   source         = "./modules/cloudfront"
   s3-domain-name = module.s3.s3-domain-name
   s3-id          = module.s3.s3-id
-  web-acl-arn    = module.waf.web-acl-arn
+  # web-acl-arn    = module.waf.web-acl-arn
 }
 
 module "s3" {

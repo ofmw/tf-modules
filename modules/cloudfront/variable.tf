@@ -1,6 +1,6 @@
-variable "web-acl-arn" {
-  type = string
-}
+# variable "web-acl-arn" {
+#   type = string
+# }
 
 variable "s3-domain-name" {
   type = string

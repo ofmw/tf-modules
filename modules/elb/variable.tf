@@ -17,6 +17,10 @@ variable "grafana-server-id" {
   type = string
 }
 
+variable "grafana-grafana-server-id" {
+  type = string
+}
+
 variable "k8s-master-id" {
   type = string
 }
