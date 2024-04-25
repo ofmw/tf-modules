@@ -83,7 +83,7 @@ module "cloudfront" {
   source         = "./modules/cloudfront"
   s3-domain-name = module.s3.s3-domain-name
   s3-id          = module.s3.s3-id
-  web-acl-arn    = module.waf.web-acl-arn
+  # web-acl-arn    = module.waf.web-acl-arn
 }
 
 module "s3" {
