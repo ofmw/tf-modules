@@ -18,7 +18,7 @@ resource "aws_security_group_rule" "k8s_master_sg_rule" {
   type                     = "ingress"
   from_port                = 0
   to_port                  = 0
-  protocol                 = "tcp"
+  protocol                 = "-1"
   source_security_group_id = aws_security_group.k8s_node_sg.id
   security_group_id        = aws_security_group.k8s_master_sg.id
 }
@@ -102,7 +102,7 @@ resource "aws_launch_template" "k8s_node_tpl" {
 
   user_data = base64encode(<<-EOF
     #!/bin/bash
-    sudo kubeadm join 172.0.10.10:6443 --token uktdln.ar1m1n0z97gvm31o --discovery-token-ca-cert-hash sha256:bcd1d4f9c89ad4f95c3b9f590b8c2184c731d4b86bc16b6fa9d756bf41d123b9
+    sudo kubeadm join ${aws_instance.k8s_master.private_ip}:6443 --token uktdln.ar1m1n0z97gvm31o --discovery-token-ca-cert-hash sha256:bcd1d4f9c89ad4f95c3b9f590b8c2184c731d4b86bc16b6fa9d756bf41d123b9
     EOF
   )
 

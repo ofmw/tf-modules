@@ -1,7 +1,7 @@
 resource "aws_vpc" "cloud_vpc" {
   cidr_block = var.vpc-cidr
   tags = {
-    Name = "cloud-vpc"
+    Name = "${var.env}-vpc"
   }
 }
 
@@ -9,7 +9,7 @@ resource "aws_vpc" "cloud_vpc" {
 resource "aws_subnet" "cloud_pub_sub" {
   count             = length(var.availability-zone)
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 8, count.index)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
   availability_zone = var.availability-zone[count.index % length(var.availability-zone)]
   tags = {
     Name = "${var.env}-pub-sub-${count.index + 1}"
@@ -20,7 +20,7 @@ resource "aws_subnet" "cloud_pub_sub" {
 resource "aws_subnet" "cloud_pvt_sub_1tier" {
   count             = length(var.availability-zone) * var.tier-usage-status-list[0]
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 10 + count.index)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
     Name = "${var.env}-pvt-1tier-${count.index + 1}"
@@ -30,7 +30,7 @@ resource "aws_subnet" "cloud_pvt_sub_1tier" {
 resource "aws_subnet" "cloud_pvt_sub_2tier" {
   count             = length(var.availability-zone) * var.tier-usage-status-list[1]
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 20 + count.index)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
     Name = "${var.env}-pvt-2tier-${count.index + 1}"
@@ -40,7 +40,7 @@ resource "aws_subnet" "cloud_pvt_sub_2tier" {
 resource "aws_subnet" "cloud_pvt_sub_3tier" {
   count             = length(var.availability-zone) * var.tier-usage-status-list[2]
   vpc_id            = aws_vpc.cloud_vpc.id
-  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 30 + count.index)
+  cidr_block        = cidrsubnet(var.vpc-cidr, 8, 40 + count.index)
   availability_zone = var.availability-zone[count.index]
   tags = {
     Name = "${var.env}-pvt-3tier-${count.index + 1}"
