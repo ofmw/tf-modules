@@ -79,107 +79,112 @@ do
         echo "Getting Instance Type From ${region}..."
         aws ec2 describe-instance-type-offerings --location-type "availability-zone" --region $region --query "InstanceTypeOfferings[?starts_with(InstanceType, 't3')].[InstanceType]" --output text | sort | uniq > instanceType.info
         echo "Get Completed"
+        while :
+        do
+            read -p "Enter Instance Name: " instanceName
+            instanceNameList+=($instanceName)
+            echo "=======SELECT AMI TYPE========"
+            echo "    1.Default    2.Custom"
+            echo "=============================="
+            read -p "Enter Number: " inputAns
+            while : 
+            do
+                if [ "$inputAns" != "1" ] && [ "$inputAns" != "2" ];then
+                    read -p "Please Enter '1' or '2': " inputAns
+                else
+                    break
+                fi
+            done
+            if [ $inputAns == "1" ];then
+                echo "===========AMI LIST==========="
+                echo "1.AMZN2 2.Ubuntu-20.04 3.RHEL9"
+                echo "=============================="
+                read -p "Enter Number: " inputAns
+                amiName=($(sed -n "${inputAns}p" "amiName.data"))
+                echo "Setting AMI..."
+                instanceAmiList+=($(aws ec2 describe-images \
+                --owners amazon \
+                --filters "Name=name,Values=$amiName" "Name=state,Values=available" \
+                --query "reverse(sort_by(Images, &Name))[:1].ImageId" \
+                --region "$region" \
+                --output text))
+                echo "Set Completed"
+            fi
+            echo "=====SELECT INSTANCE TYPE====="
+            cat -n "instanceType.info"
+            echo "=============================="
+            read -p "Enter Number: " inputAns
+            instanceTypeList+=($(sed -n "${inputAns}p" "instanceType.info"))
+            read -p "Enter Key Pair Name: " inputAns
+            instanceKeyNameList+=($inputAns)
+            read -p "Allocation of Public IP[y/n]: " inputAns
+            while : 
+            do
+                if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
+                    read -p "Please Enter 'y' or 'n': " inputAns
+                else
+                    break
+                fi
+            done
+            if [ $inputAns == "y" ];then
+                instancePubIpUsageList+=(true)
+            else
+                instancePubIpUsageList+=(false)
+            fi
+            length=${#instanceNameList[@]}
+            echo "========INSTANCE INFO========="
+            echo "Name : ${instanceNameList[length-1]}"
+            echo "AMI  : ${instanceAmiList[length-1]}"
+            echo "Type : ${instanceTypeList[length-1]}"
+            echo "Key  : ${instanceKeyNameList[length-1]}"
+            echo "PubIp: ${instancePubIpUsageList[length-1]}"
+            echo "=============================="
+            read -p "Instance Info Above Correct?[y/n]: " inputAns
+            while : 
+            do
+                if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
+                    read -p "Please Enter 'y' or 'n': " inputAns
+                elif [ $inputAns == "n" ];then
+                    unset 'instanceNameList[length-1]'
+                    unset 'instanceAmiList[length-1]'
+                    unset 'instanceTypeList[length-1]'
+                    unset 'instanceKeyNameList[length-1]'
+                    unset 'instancePubIpUsageList[length-1]'
+                    break
+                else
+                    break
+                fi
+            done
+            if [ $inputAns == "n" ];then
+
+                break
+            fi
+            read -p "Add Instance Continue?[y/n]: " inputAns
+            while : 
+            do
+                if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
+                    read -p "Please Enter 'y' or 'n': " inputAns
+                else
+                    break
+                fi
+            done
+            if [ $inputAns == "n" ];then
+                break
+            fi
+        done
+        instanceCount=${#instanceNameList[@]}
+        sed -i 's/instance-name-list\s*=\s*\[[^]]*\]/instance-name-list = ['"$(printf '"%s", ' "${instanceNameList[@]}")"']/g' terraform.tfvars
+        sed -i 's/instance-ami-list\s*=\s*\[[^]]*\]/instance-ami-list = ['"$(printf '"%s", ' "${instanceAmiList[@]}")"']/g' terraform.tfvars
+        sed -i 's/instance-type-list\s*=\s*\[[^]]*\]/instance-type-list = ['"$(printf '"%s", ' "${instanceTypeList[@]}")"']/g' terraform.tfvars
+        sed -i 's/instance-key-name-list\s*=\s*\[[^]]*\]/instance-key-name-list = ['"$(printf '"%s", ' "${instanceKeyNameList[@]}")"']/g' terraform.tfvars
+        sed -i 's/instance-pub-ip-usage-list\s*=\s*\[[^]]*\]/instance-pub-ip-usage-list = ['"$(printf '"%s", ' "${instancePubIpUsageList[@]}")"']/g' terraform.tfvars
+        sed -i 's/instance-count\s*=\s*[^"]*/instance-count = '${instanceCount}'/' terraform.tfvars
         break
     else
         bool=false
         break
     fi
 done
-while :
-do
-    read -p "Enter Instance Name: " instanceName
-    instanceNameList+=($instanceName)
-    echo "=======SELECT AMI TYPE========"
-    echo "    1.Default    2.Custom"
-    echo "=============================="
-    read -p "Enter Number: " inputAns
-    while : 
-    do
-        if [ "$inputAns" != "1" ] && [ "$inputAns" != "2" ];then
-            read -p "Please Enter '1' or '2': " inputAns
-        else
-            break
-        fi
-    done
-    if [ $inputAns == "1" ];then
-        echo "===========AMI LIST==========="
-        echo "1.AMZN2 2.Ubuntu-20.04 3.RHEL9"
-        echo "=============================="
-        read -p "Enter Number: " inputAns
-        amiName=($(sed -n "${inputAns}p" "amiName.data"))
-        echo "Setting AMI..."
-        instanceAmiList+=($(aws ec2 describe-images \
-        --owners amazon \
-        --filters "Name=name,Values=$amiName" "Name=state,Values=available" \
-        --query "reverse(sort_by(Images, &Name))[:1].ImageId" \
-        --region "$region" \
-        --output text))
-        echo "Set Completed"
-    fi
-    echo "=====SELECT INSTANCE TYPE====="
-    cat -n "instanceType.info"
-    echo "=============================="
-    read -p "Enter Number: " inputAns
-    instanceTypeList+=($(sed -n "${inputAns}p" "instanceType.info"))
-    read -p "Enter Key Pair Name: " inputAns
-    instanceKeyNameList+=($inputAns)
-    read -p "Allocation of Public IP[y/n]: " inputAns
-    while : 
-    do
-        if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
-            read -p "Please Enter 'y' or 'n': " inputAns
-        else
-            break
-        fi
-    done
-    if [ $inputAns == "y" ];then
-        instancePubIpUsageList+=(true)
-    else
-        instancePubIpUsageList+=(false)
-    fi
-    length=${#instanceNameList[@]}
-    echo "========INSTANCE INFO========="
-    echo "Name : ${instanceNameList[length-1]}"
-    echo "AMI  : ${instanceAmiList[length-1]}"
-    echo "Type : ${instanceTypeList[length-1]}"
-    echo "Key  : ${instanceKeyNameList[length-1]}"
-    echo "PubIp: ${instancePubIpUsageList[length-1]}"
-    echo "=============================="
-    read -p "Instance Info Above Correct?[y/n]: " inputAns
-    while : 
-    do
-        if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
-            read -p "Please Enter 'y' or 'n': " inputAns
-        elif [ $inputAns == "n" ];then
-            unset 'instanceNameList[length-1]'
-            unset 'instanceAmiList[length-1]'
-            unset 'instanceTypeList[length-1]'
-            unset 'instanceKeyNameList[length-1]'
-            unset 'instancePubIpUsageList[length-1]'
-            break
-        else
-            break
-        fi
-    done
-    if [ $inputAns == "n" ];then
-
-        break
-    fi
-    read -p "Add Instance Continue?[y/n]: " inputAns
-    while : 
-    do
-        if [ $inputAns != "y" ] && [ $inputAns != "n" ];then
-            read -p "Please Enter 'y' or 'n': " inputAns
-        else
-            break
-        fi
-    done
-    if [ $inputAns == "n" ];then
-        break
-    fi
-done
-echo "${instanceNameList[@]}"
-sed -i 's/instance-name-list\s*=\s*\[[^]]*\]/instance-name-list = ['"$(printf '"%s", ' "${instanceNameList[@]}")"']/g' terraform.tfvars
 
 
 
