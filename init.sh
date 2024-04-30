@@ -186,15 +186,27 @@ do
     fi
 done
 
+# Set K8S Module Variables
+
+
+
+# Set RDS Module Variables
+
+
+
+# Set Route53 Module Variables
+
+
+
+# Set S3 Module Variables
+
+
+
+# Set VPN Module Variables
 
 
 
 
-
-
-# if [ "$bool" = true ]; then
-#     sed -i 's/instance-count\s*=\s*[^"]*/instance-count = '${instanceCount}'/' terraform.tfvars
-# fi
 
 
 
