@@ -200,7 +200,7 @@ resource "aws_lb_listener" "k8s_prometheus_listener_9090" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.k8s_prometheus_tg_30909.arn
+    target_group_arn = aws_lb_target_group.k8s_prometheus_tg_9090.arn
   }
 }
 

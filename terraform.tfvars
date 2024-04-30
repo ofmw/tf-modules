@@ -1,6 +1,6 @@
 # Global Variables
 region = "us-east-1"
-env    = "TTst"
+env    = "prd"
 naming = "TTst"
 
 # VPC Module Variables
